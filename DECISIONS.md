@@ -7,7 +7,7 @@ Every judgment call, with the reasoning. Items marked **(deviation)** differ fro
 1. **Location.** `~/options-data-journal` (a sibling of the BotDeck checkout, *not* nested inside `Trading Bot Frontend`, so BotDeck's git history and my edits stay separate). Private GitHub repo `samedame/options-data-journal` is created if `gh` is authenticated (it was); otherwise the exact commands are in `README.md`.
 2. **Python 3.12, exact pins** in `requirements.txt` / `requirements-dev.txt` (direct dependencies only). `scipy` was added for `ndtr`/`rankdata`; the greeks tests deliberately use an *independent* `math.erf` implementation so the numerical code is not checked against itself.
 3. **mypy `strict = true` on `src/`**, ruff rules `E,F,W,I,B,UP,SIM,C4,RUF` (noisy `SIM102/105/115`, `RUF001-3` off). The vendored `client.py` is exempt from `UP` rewrites on purpose: it must stay valid on the older Pythons your bot repos may run.
-4. **GitHub Actions are pinned to major tags** (`actions/checkout@v4`, `setup-python@v5`), not commit SHAs. Trade-off: convenience over supply-chain pinning; pin SHAs if you want that.
+4. **GitHub Actions are pinned to major tags** (`actions/checkout@v5`, `setup-python@v6`), not commit SHAs. Trade-off: convenience over supply-chain pinning; pin SHAs if you want that.
 5. **Checkouts use `fetch-depth: 50`** so jobs stay fast as the repo grows; `odj ci publish` only needs recent history to rebase.
 
 ## Module A – snapshotter
