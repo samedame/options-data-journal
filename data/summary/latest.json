@@ -1,15 +1,5 @@
 {
-  "bots": {
-    "readme-test-bot": {
-      "alerts": 3,
-      "exits": 0,
-      "fills": 1,
-      "last_alert_ts_utc": "2026-11-04T05:33:33Z",
-      "last_fill_ts_utc": "2026-11-04T05:34:42Z",
-      "open_positions": 1,
-      "skips": 0
-    }
-  },
+  "bots": {},
   "data_collection": {
     "IWM": {
       "days_collected": 0,
@@ -40,7 +30,7 @@
     }
   },
   "disclaimer": "Snapshot marks come from delayed, indicative Yahoo Finance data taken twice daily; shadow outcomes are approximations, not a tick-accurate replay.",
-  "generated_at_utc": "2026-11-04T05:35:17Z",
+  "generated_at_utc": "2026-11-04T05:35:51Z",
   "heartbeat": {
     "ingest-alert": {
       "last_slot": null,
@@ -54,22 +44,10 @@
     }
   },
   "min_sample": 30,
-  "open_positions": [
-    {
-      "alert_id": "readme-test-bot-20261104T053333Z-1",
-      "bot": "readme-test-bot",
-      "contracts_open": 1,
-      "earliest_expiry": "2026-12-18",
-      "entry_net_price": 0.4,
-      "entry_ts_utc": "2026-11-04T05:34:42Z",
-      "fill_id": "fill-gh1",
-      "structure": "put_credit_spread",
-      "underlying": "SPY"
-    }
-  ],
+  "open_positions": [],
   "rolling": {
     "30d": {
-      "alerts": 3,
+      "alerts": 0,
       "capture_ratio": {
         "capture_ratio": null,
         "insufficient_sample": true,
@@ -81,21 +59,21 @@
       },
       "entry_slippage_pct_of_credit": {
         "insufficient_sample": true,
-        "mean": -11.1111,
-        "n": 1
+        "mean": null,
+        "n": 0
       },
       "entry_slippage_usd_per_contract": {
         "insufficient_sample": true,
-        "mean": -5.0,
-        "n": 1
+        "mean": null,
+        "n": 0
       },
       "error": null,
       "latency_seconds": {
         "insufficient_sample": true,
         "label": "INSUFFICIENT SAMPLE",
-        "median_s": 69.0,
-        "n": 1,
-        "p90_s": 69.0,
+        "median_s": null,
+        "n": 0,
+        "p90_s": null,
         "unit": "seconds alert->fill"
       },
       "slippage_vs_edge": {
@@ -110,20 +88,20 @@
         "warn_threshold": 0.5
       },
       "take_rate": {
-        "fills": 1,
+        "fills": 0,
         "insufficient_sample": true,
         "label": "INSUFFICIENT SAMPLE",
-        "n": 3,
+        "n": 0,
         "skip_reasons": {},
         "skips": 0,
-        "take_rate": 0.3333333333333333,
-        "undecided": 2
+        "take_rate": null,
+        "undecided": 0
       },
-      "unmarkable": 3,
+      "unmarkable": 0,
       "window_days": 30
     },
     "90d": {
-      "alerts": 3,
+      "alerts": 0,
       "capture_ratio": {
         "capture_ratio": null,
         "insufficient_sample": true,
@@ -135,21 +113,21 @@
       },
       "entry_slippage_pct_of_credit": {
         "insufficient_sample": true,
-        "mean": -11.1111,
-        "n": 1
+        "mean": null,
+        "n": 0
       },
       "entry_slippage_usd_per_contract": {
         "insufficient_sample": true,
-        "mean": -5.0,
-        "n": 1
+        "mean": null,
+        "n": 0
       },
       "error": null,
       "latency_seconds": {
         "insufficient_sample": true,
         "label": "INSUFFICIENT SAMPLE",
-        "median_s": 69.0,
-        "n": 1,
-        "p90_s": 69.0,
+        "median_s": null,
+        "n": 0,
+        "p90_s": null,
         "unit": "seconds alert->fill"
       },
       "slippage_vs_edge": {
@@ -164,16 +142,16 @@
         "warn_threshold": 0.5
       },
       "take_rate": {
-        "fills": 1,
+        "fills": 0,
         "insufficient_sample": true,
         "label": "INSUFFICIENT SAMPLE",
-        "n": 3,
+        "n": 0,
         "skip_reasons": {},
         "skips": 0,
-        "take_rate": 0.3333333333333333,
-        "undecided": 2
+        "take_rate": null,
+        "undecided": 0
       },
-      "unmarkable": 3,
+      "unmarkable": 0,
       "window_days": 90
     }
   },
