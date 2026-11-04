@@ -1,0 +1,52 @@
+{
+  "date": "2026-11-04",
+  "expiries_fetched": 15,
+  "filters": {
+    "dte_max": 60,
+    "dte_min": 0,
+    "moneyness_pct": 15
+  },
+  "flag_counts": {
+    "crossed_market": 1,
+    "iv_divergence": 362,
+    "missing_oi": 0,
+    "parity_violation": 1534,
+    "stale_last": 1458,
+    "wide_spread": 0,
+    "zero_ask": 1,
+    "zero_bid": 145
+  },
+  "greeks_inputs_defaulted": false,
+  "hhmm": "1550",
+  "library_versions": {
+    "numpy": "2.5.4",
+    "odj": "0.1.0",
+    "pandas": "3.1.0",
+    "pyarrow": "26.0.1",
+    "python": "3.12.15",
+    "scipy": "1.18.1",
+    "yfinance": "1.8.0"
+  },
+  "market_open_at_fetch": true,
+  "parquet_bytes": 146473,
+  "pin_only": false,
+  "pinned_rows": 0,
+  "provider": "yfinance",
+  "q_source": "yfinance:info.trailingAnnualDividendYield",
+  "q_used": 0.0025828858,
+  "r_source": "yfinance:^IRX",
+  "r_used": 0.040250000953674314,
+  "rows": 2627,
+  "slot": "close",
+  "snapshot_ts_utc": "2026-11-04T20:51:18Z",
+  "underlying": "QQQ",
+  "underlying_price": 691.3699951171875,
+  "unusable_flags": [
+    "zero_bid",
+    "zero_ask",
+    "crossed_market",
+    "wide_spread"
+  ],
+  "usable_pct": 94.44,
+  "usable_rows": 2481
+}

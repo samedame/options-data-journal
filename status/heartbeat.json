@@ -1,5 +1,18 @@
 {
   "jobs": {
+    "snapshot": {
+      "last_detail": "SPY:ok; QQQ:ok; IWM:ok",
+      "last_run_utc": "2026-11-04T20:51:24Z",
+      "last_slot": "2026-11-04/close",
+      "last_status": "ok",
+      "last_success_utc": "2026-11-04T20:51:24Z",
+      "slots": {
+        "2026-11-04/close": {
+          "status": "ok",
+          "ts_utc": "2026-11-04T20:51:24Z"
+        }
+      }
+    },
     "weekly_report": {
       "last_run_utc": "2026-11-04T16:17:08Z",
       "last_slot": "2026-W45",
