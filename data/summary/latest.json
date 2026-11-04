@@ -1,7 +1,7 @@
 {
   "bots": {
     "readme-test-bot": {
-      "alerts": 1,
+      "alerts": 3,
       "exits": 0,
       "fills": 0,
       "last_alert_ts_utc": "2026-11-04T05:33:33Z",
@@ -40,7 +40,7 @@
     }
   },
   "disclaimer": "Snapshot marks come from delayed, indicative Yahoo Finance data taken twice daily; shadow outcomes are approximations, not a tick-accurate replay.",
-  "generated_at_utc": "2026-11-04T05:34:13Z",
+  "generated_at_utc": "2026-11-04T05:34:15Z",
   "heartbeat": {
     "ingest-alert": {
       "last_slot": null,
@@ -52,7 +52,7 @@
   "open_positions": [],
   "rolling": {
     "30d": {
-      "alerts": 1,
+      "alerts": 3,
       "capture_ratio": {
         "capture_ratio": null,
         "insufficient_sample": true,
@@ -96,17 +96,17 @@
         "fills": 0,
         "insufficient_sample": true,
         "label": "INSUFFICIENT SAMPLE",
-        "n": 1,
+        "n": 3,
         "skip_reasons": {},
         "skips": 0,
         "take_rate": 0.0,
-        "undecided": 1
+        "undecided": 3
       },
-      "unmarkable": 1,
+      "unmarkable": 3,
       "window_days": 30
     },
     "90d": {
-      "alerts": 1,
+      "alerts": 3,
       "capture_ratio": {
         "capture_ratio": null,
         "insufficient_sample": true,
@@ -150,13 +150,13 @@
         "fills": 0,
         "insufficient_sample": true,
         "label": "INSUFFICIENT SAMPLE",
-        "n": 1,
+        "n": 3,
         "skip_reasons": {},
         "skips": 0,
         "take_rate": 0.0,
-        "undecided": 1
+        "undecided": 3
       },
-      "unmarkable": 1,
+      "unmarkable": 3,
       "window_days": 90
     }
   },
