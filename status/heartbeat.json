@@ -1,0 +1,11 @@
+{
+  "jobs": {
+    "ingest-alert": {
+      "last_run_utc": "2026-11-04T05:34:02Z",
+      "last_status": "ok",
+      "last_success_utc": "2026-11-04T05:34:02Z",
+      "slots": {}
+    }
+  },
+  "schema_version": 1
+}

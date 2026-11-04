@@ -1,0 +1,164 @@
+{
+  "bots": {
+    "readme-test-bot": {
+      "alerts": 1,
+      "exits": 0,
+      "fills": 0,
+      "last_alert_ts_utc": "2026-11-04T05:33:33Z",
+      "last_fill_ts_utc": null,
+      "open_positions": 0,
+      "skips": 0
+    }
+  },
+  "data_collection": {
+    "IWM": {
+      "days_collected": 0,
+      "first_date": null,
+      "last_date": null,
+      "last_snapshot_status": null,
+      "last_snapshot_ts_utc": null,
+      "last_usable_pct": null,
+      "snapshots": 0
+    },
+    "QQQ": {
+      "days_collected": 0,
+      "first_date": null,
+      "last_date": null,
+      "last_snapshot_status": null,
+      "last_snapshot_ts_utc": null,
+      "last_usable_pct": null,
+      "snapshots": 0
+    },
+    "SPY": {
+      "days_collected": 0,
+      "first_date": null,
+      "last_date": null,
+      "last_snapshot_status": null,
+      "last_snapshot_ts_utc": null,
+      "last_usable_pct": null,
+      "snapshots": 0
+    }
+  },
+  "disclaimer": "Snapshot marks come from delayed, indicative Yahoo Finance data taken twice daily; shadow outcomes are approximations, not a tick-accurate replay.",
+  "generated_at_utc": "2026-11-04T05:34:03Z",
+  "heartbeat": {
+    "ingest-alert": {
+      "last_slot": null,
+      "last_status": "ok",
+      "last_success_utc": "2026-11-04T05:34:02Z"
+    }
+  },
+  "min_sample": 30,
+  "open_positions": [],
+  "rolling": {
+    "30d": {
+      "alerts": 1,
+      "capture_ratio": {
+        "capture_ratio": null,
+        "insufficient_sample": true,
+        "label": "INSUFFICIENT SAMPLE",
+        "n": 0,
+        "note": null,
+        "realized_usd": null,
+        "theoretical_usd": null
+      },
+      "entry_slippage_pct_of_credit": {
+        "insufficient_sample": true,
+        "mean": null,
+        "n": 0
+      },
+      "entry_slippage_usd_per_contract": {
+        "insufficient_sample": true,
+        "mean": null,
+        "n": 0
+      },
+      "error": null,
+      "latency_seconds": {
+        "insufficient_sample": true,
+        "label": "INSUFFICIENT SAMPLE",
+        "median_s": null,
+        "n": 0,
+        "p90_s": null,
+        "unit": "seconds alert->fill"
+      },
+      "slippage_vs_edge": {
+        "avg_round_trip_slippage_cost_usd": null,
+        "avg_theoretical_edge_usd": null,
+        "insufficient_sample": true,
+        "label": "INSUFFICIENT SAMPLE",
+        "n": 0,
+        "plain_english": null,
+        "ratio": null,
+        "red_flag": false,
+        "warn_threshold": 0.5
+      },
+      "take_rate": {
+        "fills": 0,
+        "insufficient_sample": true,
+        "label": "INSUFFICIENT SAMPLE",
+        "n": 1,
+        "skip_reasons": {},
+        "skips": 0,
+        "take_rate": 0.0,
+        "undecided": 1
+      },
+      "unmarkable": 1,
+      "window_days": 30
+    },
+    "90d": {
+      "alerts": 1,
+      "capture_ratio": {
+        "capture_ratio": null,
+        "insufficient_sample": true,
+        "label": "INSUFFICIENT SAMPLE",
+        "n": 0,
+        "note": null,
+        "realized_usd": null,
+        "theoretical_usd": null
+      },
+      "entry_slippage_pct_of_credit": {
+        "insufficient_sample": true,
+        "mean": null,
+        "n": 0
+      },
+      "entry_slippage_usd_per_contract": {
+        "insufficient_sample": true,
+        "mean": null,
+        "n": 0
+      },
+      "error": null,
+      "latency_seconds": {
+        "insufficient_sample": true,
+        "label": "INSUFFICIENT SAMPLE",
+        "median_s": null,
+        "n": 0,
+        "p90_s": null,
+        "unit": "seconds alert->fill"
+      },
+      "slippage_vs_edge": {
+        "avg_round_trip_slippage_cost_usd": null,
+        "avg_theoretical_edge_usd": null,
+        "insufficient_sample": true,
+        "label": "INSUFFICIENT SAMPLE",
+        "n": 0,
+        "plain_english": null,
+        "ratio": null,
+        "red_flag": false,
+        "warn_threshold": 0.5
+      },
+      "take_rate": {
+        "fills": 0,
+        "insufficient_sample": true,
+        "label": "INSUFFICIENT SAMPLE",
+        "n": 1,
+        "skip_reasons": {},
+        "skips": 0,
+        "take_rate": 0.0,
+        "undecided": 1
+      },
+      "unmarkable": 1,
+      "window_days": 90
+    }
+  },
+  "schema_version": 1
+}
