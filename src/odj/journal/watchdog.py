@@ -48,12 +48,16 @@ def check(root: Path | None = None, *, now: datetime | None = None) -> list[str]
     jobs = hb.get("jobs") or {}
     problems: list[str] = []
 
+    nb_raw = wd.get("not_before_utc")
+    not_before = parse_ts(str(nb_raw)) if nb_raw else None
     grace = timedelta(minutes=int(wd["grace_minutes"]))
     look = timedelta(hours=int(wd["lookback_hours"]))
     snap = jobs.get("snapshot") or {}
     for slot_cfg in tcfg["snapshot"]["slots"]:
         name = slot_cfg["name"]
         expected = [s.at_et for s in expected_slot_times([slot_cfg], now - look, now)]
+        if not_before:
+            expected = [t for t in expected if t >= not_before]
         late = overdue(expected, _ok_times(snap, name), now, grace)
         for t in late:
             mins = int((now - t).total_seconds() // 60)
@@ -71,6 +75,8 @@ def check(root: Path | None = None, *, now: datetime | None = None) -> list[str]
     if wk:
         wgrace = timedelta(minutes=int(wk.get("grace_minutes", 180)))
         exp = weekly_expected(now, jcfg)
+        if not_before:
+            exp = [t for t in exp if t >= not_before]
         late = (
             overdue(exp[:1], _ok_times(jobs.get("weekly_report") or {}), now, wgrace) if exp else []
         )

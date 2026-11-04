@@ -58,6 +58,8 @@ robinhood:
     weights: {legs: 0.55, structure: 0.15, time: 0.20, size: 0.10}
 
 watchdog:
+  # Expectations before this instant are ignored (the repo went live then); after it, silence is alarming.
+  not_before_utc: "2026-11-04T12:00:00Z"
   grace_minutes: 45                # a snapshot slot is "late" this long after its slot time
   lookback_hours: 30
   jobs:

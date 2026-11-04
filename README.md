@@ -152,18 +152,18 @@ mkt = load_market("2026-11-01", "2026-12-31")                                   
 
 ## GitHub Actions minutes (private repo allowance: 2,000 min/month on the free plan)
 
-Measured here: offline selftest 13 s; live 3-underlying fetch + enrich 27 s; dependency install ~35 s with the pip cache; checkout/commit ~15 s
-⇒ a snapshot or ingest job ≈ 1.5–2 billed minutes (each job rounds up to a minute). Estimate per month (21 trading days):
+Measured on GitHub-hosted runners (this repo's own runs): snapshot job 37 s, alert-ingest 35-48 s, issue-ingest 35 s, CI (install + `make verify` + selftest) 1 m 15 s.
+Billing rounds each job up to a whole minute, so a snapshot/ingest job is **1 billed minute** and a CI run is 2. Estimate per month (21 trading days):
 
 | job | runs | ≈ min |
 |---|---|---|
-| snapshot (2 real + 2 gated-out crons / day; gated-out ones cost seconds) | 42 real + 42 trivial | ~100 |
-| alert ingest (assume 10 alerts/day) | 210 | ~320 |
-| issue ingest (assume 5/day) | 105 | ~160 |
-| watchdog (3/weekday) | ~65 | ~65 |
+| snapshot (2 real + 2 gated-out crons per day; the gated-out ones finish in seconds but still bill 1 min) | 42 + 42 | ~85 |
+| alert ingest (assume 10 alerts/day) | 210 | ~210 |
+| issue ingest (assume 5/day) | 105 | ~105 |
+| watchdog (3 per weekday) | ~65 | ~65 |
 | weekly report + compact | ~5 | ~10 |
 | CI on pushes (assume 20/month) | 20 | ~40 |
-| **total** | | **≈ 700 (35% of the allowance)** |
+| **total** | | **≈ 515 (≈ 26 % of the allowance)** |
 
 If you Worker-dispatch the snapshots (step 3) the wrong-offset crons never start. If alert volume is much higher than 10/day, ingest dominates.
 

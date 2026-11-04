@@ -298,3 +298,23 @@ def test_build_alert_roundtrips_through_the_real_schema(root: Path) -> None:
         -42.0,
     )
     assert validate("alert", straddle, root)["alert_net_price"] == -42.0
+
+
+def test_watchdog_ignores_expectations_before_go_live(root: Path) -> None:
+    """The repo goes live mid-week: slots/reports that were due before `not_before_utc` must not alarm."""
+    cfg = root / "config" / "journal.yml"
+    cfg.write_text(
+        cfg.read_text().replace(
+            'not_before_utc: "2000-01-01T00:00:00Z"', 'not_before_utc: "2026-11-04T12:00:00Z"'
+        )
+    )
+    assert [
+        p for p in check(root, now=utc(date(2026, 11, 3), "17:30")) if p.startswith("snapshot slot")
+    ] == []  # before go-live
+    assert any(
+        "`open`" in p for p in check(root, now=utc(date(2026, 11, 4), "16:30"))
+    )  # first real slot, nothing ran
+    assert not any("weekly report" in p for p in check(root, now=utc(date(2026, 11, 4), "16:30")))
+    assert any(
+        "weekly report" in p for p in check(root, now=utc(date(2026, 11, 9), "05:00"))
+    )  # first Sunday report is expected
