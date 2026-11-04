@@ -198,3 +198,23 @@ def test_docs_exist_and_are_specific(doc: str, needles: list[str]) -> None:
     assert len(text) > 1500, f"{doc} looks like boilerplate"
     for n in needles:
         assert n in text, f"{doc} should mention {n!r}"
+
+
+def test_cloudflare_worker_crons_match_snapshot_workflow_and_hold_no_secrets() -> None:
+    worker = (REPO / "infra" / "cloudflare" / "worker.js").read_text()
+    crons = re.findall(r'"(\d+ [\d,]+ \* \* [\d-]+)":\s*"(open|close)"', worker)
+    assert sorted(slot for _, slot in crons) == ["close", "open"]
+    wf = load(REPO / ".github/workflows/snapshot.yml")
+    on = wf.get("on", wf.get(True))
+    gh = {(c["cron"].split()[0], c["cron"].split()[1]) for c in on["schedule"]}
+    for cron, _slot in crons:
+        minute, hours = cron.split()[0], cron.split()[1]
+        for hour in hours.split(
+            ","
+        ):  # the Worker must fire at the same UTC times as the workflow fallback
+            assert (minute, hour) in gh, (cron, hour)
+        assert cron.endswith("1-5")
+    for f in (REPO / "infra").rglob("*"):
+        if f.is_file():
+            text = f.read_text()
+            assert "cfut_" not in text and "github_pat_" not in text and "ghp_" not in text, f

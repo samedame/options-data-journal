@@ -37,49 +37,28 @@ gh repo create samedame/options-data-journal --private --source . --remote origi
    for l in log-fill log-exit log-skip; do gh label create "$l" --repo samedame/options-data-journal --color 0E8A16 || true; done
    ```
 
-3. **Scheduler.** Paste this into your `open-scheduler` Cloudflare Worker (I cannot see that Worker's code, so this is generic –
-   adapt the names). Create a fine-grained PAT limited to **only this repository** with **Actions: Read and write**,
-   and store it as a Worker secret: `wrangler secret put JOURNAL_ACTIONS_TOKEN`.
+3. **Scheduler (Cloudflare).** GitHub's own `schedule:` is best-effort and can skip runs entirely (it skipped the very first slot), so a Cloudflare
+   Worker triggers `snapshot.yml` through its `workflow_dispatch` endpoint. Source: [`infra/cloudflare/worker.js`](infra/cloudflare/worker.js) (no secrets in it).
+   It is its **own** Worker, `odj-snapshot-scheduler`; your existing `open-scheduler` is not touched. Two cron triggers (UTC, both DST offsets per slot in one
+   expression because the Workers Free plan allows 5 per account): `45 13,14 * * 1-5` (open) and `50 19,20 * * 1-5` (close). The Worker checks New York time and
+   drops the wrong offset.
 
-   `wrangler.toml` (UTC; both DST offsets of each slot – the workflow/script exits quietly when the New York time is outside the slot window):
+   The Worker needs one secret before it can dispatch: a fine-grained GitHub PAT limited to **only this repository** with **Actions: Read and write**.
 
-   ```toml
-   [triggers]
-   crons = ["45 13 * * 1-5", "45 14 * * 1-5", "50 19 * * 1-5", "50 20 * * 1-5"]
+   ```bash
+   npx wrangler login    # once
+   npx wrangler secret put JOURNAL_ACTIONS_TOKEN --name odj-snapshot-scheduler   # paste the PAT when prompted
    ```
 
-   Worker code:
+   (Or: Cloudflare dashboard → Workers → `odj-snapshot-scheduler` → Settings → Variables and Secrets.) Until it is set the Worker logs
+   `JOURNAL_ACTIONS_TOKEN is not set` and dispatches nothing. Redeploy after editing `worker.js` (token from your environment, never the repo):
 
-   ```js
-   const JOURNAL = "samedame/options-data-journal";
-   const SLOT_BY_CRON = {
-     "45 13 * * 1-5": "open", "45 14 * * 1-5": "open",
-     "50 19 * * 1-5": "close", "50 20 * * 1-5": "close",
-   };
-   function nyMinutes() { // minutes since midnight, New York time
-     const p = new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", hour: "2-digit", minute: "2-digit", hourCycle: "h23" })
-       .formatToParts(new Date()).reduce((a, x) => (a[x.type] = x.value, a), {});
-     return Number(p.hour) * 60 + Number(p.minute);
-   }
-   // Optional cost guard: only dispatch for the DST offset that is actually inside the slot window.
-   const WINDOW = { open: [9 * 60 + 40, 10 * 60 + 30], close: [12 * 60 + 45, 16 * 60 + 30] }; // close also covers the 12:50 half-day slot
-   async function dispatchSnapshot(env, slot) {
-     const [lo, hi] = WINDOW[slot], now = nyMinutes();
-     if (now < lo || now > hi) return;
-     const r = await fetch(`https://api.github.com/repos/${JOURNAL}/actions/workflows/snapshot.yml/dispatches`, {
-       method: "POST",
-       headers: { Authorization: `Bearer ${env.JOURNAL_ACTIONS_TOKEN}`, Accept: "application/vnd.github+json",
-                  "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "open-scheduler" },
-       body: JSON.stringify({ ref: "main", inputs: { slot } }),
-     });
-     if (r.status !== 204) console.error("journal dispatch failed", r.status, await r.text());
-   }
-   // inside your existing scheduled(event, env, ctx):
-   //   const slot = SLOT_BY_CRON[event.cron]; if (slot) ctx.waitUntil(dispatchSnapshot(env, slot));
+   ```bash
+   curl -s -X PUT "https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT_ID/workers/scripts/odj-snapshot-scheduler" -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+     -F 'metadata={"main_module":"worker.js","compatibility_date":"2026-10-01"};type=application/json' -F "worker.js=@infra/cloudflare/worker.js;filename=worker.js;type=application/javascript+module"
    ```
 
-   The Worker triggers `snapshot.yml` through its `workflow_dispatch` endpoint with a `slot` input. The repo also has its own cron fallback in `snapshot.yml`; running both is safe because snapshots are idempotent per
-   (underlying, date, slot).
+   The repo keeps its own cron fallback in `snapshot.yml`; running both is safe because snapshots are idempotent per (underlying, date, slot).
 
 4. **First live check** (no commit, no network writes):
 
