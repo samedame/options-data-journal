@@ -1,0 +1,144 @@
+{
+  "generated_at_utc": "2026-11-04T16:17:08Z",
+  "mark_mode": "mid",
+  "metrics": {
+    "alerts": 0,
+    "calibration": {
+      "buckets": [
+        {
+          "bucket": "1-40",
+          "insufficient_sample": true,
+          "label": "INSUFFICIENT SAMPLE",
+          "mean_realized_pnl": null,
+          "mean_theoretical_pnl": null,
+          "n": 0,
+          "n_realized": 0,
+          "win_rate": null
+        },
+        {
+          "bucket": "41-60",
+          "insufficient_sample": true,
+          "label": "INSUFFICIENT SAMPLE",
+          "mean_realized_pnl": null,
+          "mean_theoretical_pnl": null,
+          "n": 0,
+          "n_realized": 0,
+          "win_rate": null
+        },
+        {
+          "bucket": "61-80",
+          "insufficient_sample": true,
+          "label": "INSUFFICIENT SAMPLE",
+          "mean_realized_pnl": null,
+          "mean_theoretical_pnl": null,
+          "n": 0,
+          "n_realized": 0,
+          "win_rate": null
+        },
+        {
+          "bucket": "81-100",
+          "insufficient_sample": true,
+          "label": "INSUFFICIENT SAMPLE",
+          "mean_realized_pnl": null,
+          "mean_theoretical_pnl": null,
+          "n": 0,
+          "n_realized": 0,
+          "win_rate": null
+        }
+      ],
+      "insufficient_sample": true,
+      "label": "INSUFFICIENT SAMPLE",
+      "n": 0,
+      "rank_correlation": {
+        "ci_high": null,
+        "ci_includes_zero": null,
+        "ci_low": null,
+        "n": 0,
+        "rho": null
+      },
+      "verdict": "INSUFFICIENT SAMPLE: n=0 < 30; no conclusion about the score."
+    },
+    "capture_ratio": {
+      "capture_ratio": null,
+      "insufficient_sample": true,
+      "label": "INSUFFICIENT SAMPLE",
+      "n": 0,
+      "note": null,
+      "realized_usd": null,
+      "theoretical_usd": null
+    },
+    "capture_ratio_by_bot": {},
+    "capture_ratio_by_strategy": {},
+    "capture_ratio_by_structure": {},
+    "capture_ratio_by_underlying": {},
+    "entry_slippage": {
+      "insufficient_sample": true,
+      "label": "INSUFFICIENT SAMPLE",
+      "mean_pct_of_alert_premium": null,
+      "mean_pct_of_max_loss": null,
+      "mean_per_share": null,
+      "mean_usd_per_contract": null,
+      "median_usd_per_contract": null,
+      "n": 0,
+      "note": "negative = worse than the alert"
+    },
+    "entry_slippage_by_bot": {},
+    "exit_slippage": {
+      "insufficient_sample": true,
+      "label": "INSUFFICIENT SAMPLE",
+      "mean_usd_per_contract": null,
+      "median_usd_per_contract": null,
+      "n": 0,
+      "note": "actual exit vs shadow-tracker price at rule trigger; negative = worse"
+    },
+    "gate_effect": {
+      "by_state": {},
+      "populated": false
+    },
+    "latency": {
+      "insufficient_sample": true,
+      "label": "INSUFFICIENT SAMPLE",
+      "median_s": null,
+      "n": 0,
+      "p90_s": null,
+      "unit": "seconds alert->fill"
+    },
+    "min_sample": 30,
+    "slippage_vs_edge": {
+      "avg_round_trip_slippage_cost_usd": null,
+      "avg_theoretical_edge_usd": null,
+      "insufficient_sample": true,
+      "label": "INSUFFICIENT SAMPLE",
+      "n": 0,
+      "plain_english": null,
+      "ratio": null,
+      "red_flag": false,
+      "warn_threshold": 0.5
+    },
+    "take_rate": {
+      "fills": 0,
+      "insufficient_sample": true,
+      "label": "INSUFFICIENT SAMPLE",
+      "n": 0,
+      "skip_reasons": {},
+      "skips": 0,
+      "take_rate": null,
+      "undecided": 0
+    },
+    "take_rate_by_bot": {},
+    "take_rate_by_strategy": {},
+    "unmarkable": {
+      "alert_ids": [],
+      "count": 0,
+      "reasons": {}
+    }
+  },
+  "this_week": {
+    "alerts": 0,
+    "exits": 0,
+    "fills": 0,
+    "skips": 0
+  },
+  "week": "2026-W45",
+  "window_days": 90
+}

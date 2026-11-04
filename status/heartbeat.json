@@ -1,0 +1,17 @@
+{
+  "jobs": {
+    "weekly_report": {
+      "last_run_utc": "2026-11-04T16:17:08Z",
+      "last_slot": "2026-W45",
+      "last_status": "ok",
+      "last_success_utc": "2026-11-04T16:17:08Z",
+      "slots": {
+        "2026-W45": {
+          "status": "ok",
+          "ts_utc": "2026-11-04T16:17:08Z"
+        }
+      }
+    }
+  },
+  "schema_version": 1
+}
