@@ -11,6 +11,19 @@
       "last_status": "ok",
       "last_success_utc": "2026-11-04T05:35:14Z",
       "slots": {}
+    },
+    "snapshot": {
+      "last_detail": "SPY:ok",
+      "last_run_utc": "2026-11-04T05:36:33Z",
+      "last_slot": "2026-11-04/close",
+      "last_status": "ok",
+      "last_success_utc": "2026-11-04T05:36:33Z",
+      "slots": {
+        "2026-11-04/close": {
+          "status": "ok",
+          "ts_utc": "2026-11-04T05:36:33Z"
+        }
+      }
     }
   },
   "schema_version": 1

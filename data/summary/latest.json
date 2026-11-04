@@ -5,7 +5,7 @@
       "days_collected": 0,
       "first_date": null,
       "last_date": null,
-      "last_snapshot_status": null,
+      "last_snapshot_status": "ok",
       "last_snapshot_ts_utc": null,
       "last_usable_pct": null,
       "snapshots": 0
@@ -14,23 +14,23 @@
       "days_collected": 0,
       "first_date": null,
       "last_date": null,
-      "last_snapshot_status": null,
+      "last_snapshot_status": "ok",
       "last_snapshot_ts_utc": null,
       "last_usable_pct": null,
       "snapshots": 0
     },
     "SPY": {
-      "days_collected": 0,
-      "first_date": null,
-      "last_date": null,
-      "last_snapshot_status": null,
-      "last_snapshot_ts_utc": null,
-      "last_usable_pct": null,
-      "snapshots": 0
+      "days_collected": 1,
+      "first_date": "2026-11-04",
+      "last_date": "2026-11-04",
+      "last_snapshot_status": "ok",
+      "last_snapshot_ts_utc": "2026-11-04T05:36:33Z",
+      "last_usable_pct": 0.83,
+      "snapshots": 1
     }
   },
   "disclaimer": "Snapshot marks come from delayed, indicative Yahoo Finance data taken twice daily; shadow outcomes are approximations, not a tick-accurate replay.",
-  "generated_at_utc": "2026-11-04T05:35:51Z",
+  "generated_at_utc": "2026-11-04T05:36:25Z",
   "heartbeat": {
     "ingest-alert": {
       "last_slot": null,
@@ -41,6 +41,11 @@
       "last_slot": null,
       "last_status": "ok",
       "last_success_utc": "2026-11-04T05:35:14Z"
+    },
+    "snapshot": {
+      "last_slot": "2026-11-04/close",
+      "last_status": "ok",
+      "last_success_utc": "2026-11-04T05:36:33Z"
     }
   },
   "min_sample": 30,
