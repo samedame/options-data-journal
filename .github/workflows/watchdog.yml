@@ -1,0 +1,37 @@
+name: watchdog
+
+# Did every scheduled job run in its expected window (holidays, half-days and weekends aware)?
+# Posts to Discord and fails the run when a snapshot slot is missed/late or the weekly report is missing.
+# Check times: 16:00 and 22:00 UTC on weekdays are after the grace period of the 09:45 and 15:50 ET
+# slots in both EST and EDT (also on half-days); Monday 06:00 UTC covers Sunday's weekly report.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 16,22 * * 1-5"
+    - cron: "0 6 * * 1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: odj-watchdog
+  cancel-in-progress: true
+
+jobs:
+  watchdog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install
+        run: |
+          pip install -r requirements.txt
+          pip install -e . --no-deps
+      - name: Check heartbeats
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: python -m odj watchdog

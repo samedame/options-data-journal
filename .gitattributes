@@ -1,0 +1,3 @@
+# Append-only journals: when two runs append to the same file concurrently, keep both sides' lines.
+journal/**/*.jsonl merge=union
+*.parquet binary

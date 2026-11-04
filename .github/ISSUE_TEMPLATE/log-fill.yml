@@ -1,0 +1,83 @@
+name: Log a fill
+description: Record an entry fill. Fastest path - pick the alert, enter contracts and net price.
+title: "[fill] "
+labels: ["log-fill"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Prices are **per share**. **Credit = positive, debit = negative** (a $0.85 credit is `0.85`; paying $4.10 is `-4.10`).
+        If you give an Alert ID and leave Legs empty, the alert's legs are used.
+  - type: input
+    id: alert_id
+    attributes:
+      label: Alert ID
+      description: e.g. spy-bps-bot-20261102T143500Z-1 (leave empty if there was no alert)
+    validations:
+      required: false
+  - type: input
+    id: ts
+    attributes:
+      label: Filled at (UTC)
+      description: ISO-8601 with timezone, e.g. 2026-11-02T14:41:00Z or 2026-11-02T09:41:00-05:00. Empty = when this issue is opened.
+    validations:
+      required: false
+  - type: textarea
+    id: legs
+    attributes:
+      label: Legs
+      description: "One per line: `sell put 530 2026-11-20`, `buy put 525 2026-11-20 x1`. Empty = copy from the alert."
+    validations:
+      required: false
+  - type: input
+    id: contracts
+    attributes:
+      label: Contracts
+      placeholder: "2"
+    validations:
+      required: true
+  - type: input
+    id: net_price
+    attributes:
+      label: Net price per share
+      description: Credit positive, debit negative.
+      placeholder: "0.85"
+    validations:
+      required: true
+  - type: input
+    id: fees
+    attributes:
+      label: Fees total (USD)
+      placeholder: "1.30"
+    validations:
+      required: false
+  - type: dropdown
+    id: order_type
+    attributes:
+      label: Order type
+      options:
+        - limit
+        - market
+      default: 0
+    validations:
+      required: true
+  - type: input
+    id: limit_price
+    attributes:
+      label: Limit price
+      description: Per share, same sign convention. Optional.
+    validations:
+      required: false
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+    validations:
+      required: false
+  - type: checkboxes
+    id: test
+    attributes:
+      label: Test record
+      options:
+        - label: This is a test record (removable with `odj reset-test-data`)
+          required: false

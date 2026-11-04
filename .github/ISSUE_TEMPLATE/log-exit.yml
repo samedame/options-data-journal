@@ -1,0 +1,77 @@
+name: Log an exit
+description: Record closing (part of) a position.
+title: "[exit] "
+labels: ["log-exit"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Net price is the **cash flow of the closing trade per share**: closing a credit spread is a *debit*, so enter a
+        **negative** number (e.g. `-0.20`). An option that expires worthless is `0`. Give the Fill ID, or the Alert ID if that alert has exactly one fill.
+  - type: input
+    id: fill_id
+    attributes:
+      label: Fill ID
+      description: e.g. fill-gh41
+    validations:
+      required: false
+  - type: input
+    id: alert_id
+    attributes:
+      label: Alert ID (if Fill ID unknown)
+    validations:
+      required: false
+  - type: input
+    id: ts
+    attributes:
+      label: Exited at (UTC)
+      description: ISO-8601 with timezone. Empty = when this issue is opened.
+    validations:
+      required: false
+  - type: input
+    id: contracts
+    attributes:
+      label: Contracts
+    validations:
+      required: true
+  - type: input
+    id: net_price
+    attributes:
+      label: Net price per share
+      placeholder: "-0.20"
+    validations:
+      required: true
+  - type: input
+    id: fees
+    attributes:
+      label: Fees total (USD)
+    validations:
+      required: false
+  - type: dropdown
+    id: reason
+    attributes:
+      label: Exit reason
+      options:
+        - profit_target
+        - stop
+        - dte
+        - expiry_worthless
+        - assignment
+        - manual
+        - other
+      default: 5
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+    validations:
+      required: false
+  - type: checkboxes
+    id: test
+    attributes:
+      label: Test record
+      options:
+        - label: This is a test record (removable with `odj reset-test-data`)
+          required: false

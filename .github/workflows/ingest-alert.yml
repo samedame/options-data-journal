@@ -1,0 +1,55 @@
+name: ingest-alert
+
+# Receives alerts from the other bots via repository_dispatch (event_type "alert").
+# GitHub caps client_payload at 10 top-level properties, so the alert arrives as ONE JSON-string
+# property: {"alert": "<json>"}. The payload is read from the event FILE and never interpolated
+# into a shell command.
+on:
+  repository_dispatch:
+    types: [alert]
+
+permissions:
+  contents: write
+
+# NOTE: a shared concurrency group would silently DROP alerts: GitHub keeps only one *pending* run per
+# group and cancels older pending ones even with cancel-in-progress: false. Each run therefore gets its
+# own group (nothing is ever cancelled) and `odj ci publish` resolves the git-level race instead
+# (union-merge JSONL + fetch/rebase/push with bounded retries). See DECISIONS.md.
+concurrency:
+  group: odj-alert-${{ github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 50
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install
+        run: |
+          pip install -r requirements.txt
+          pip install -e . --no-deps
+      - name: Validate and journal the alert
+        id: ingest
+        continue-on-error: true
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: python -m odj ingest-alert --event "$GITHUB_EVENT_PATH"
+      - name: Commit and push
+        if: steps.ingest.outcome == 'success'
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          ODJ_GIT_NAME: github-actions[bot]
+          ODJ_GIT_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+        run: python -m odj ci publish --message "alert ingest ${GITHUB_RUN_ID} [skip ci]"
+      - name: Reject loudly
+        if: steps.ingest.outcome == 'failure'
+        run: |
+          echo "alert rejected (details were posted to Discord); nothing was written"
+          exit 1

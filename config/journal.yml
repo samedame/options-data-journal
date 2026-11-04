@@ -1,0 +1,65 @@
+# Module B configuration: thresholds, enums, report settings, Robinhood import mapping.
+version: 1
+
+min_sample: 30                 # below this n, a metric is labelled INSUFFICIENT SAMPLE
+slippage_edge_warn: 0.5        # red flag when avg round-trip slippage cost / avg theoretical edge exceeds this
+default_mark_mode: mid         # mid | conservative
+
+contract_multiplier: {option: 100, equity: 1}
+
+confidence_buckets: [[1, 40], [41, 60], [61, 80], [81, 100]]
+bootstrap: {resamples: 2000, ci: 0.95, seed: 20260101}
+
+# Mirrors of the JSON-Schema enums (a test asserts these match schemas/*.json).
+enums:
+  structure: [put_credit_spread, call_credit_spread, iron_condor, long_straddle, long_strangle,
+              long_call, long_put, short_put, covered_call, equity_long, equity_short, other]
+  alert_price_basis: [mid, bid_ask, last, model]
+  order_type: [limit, market]
+  source: [cli, issue, csv]
+  exit_reason: [profit_target, stop, dte, expiry_worthless, assignment, manual, other]
+  skip_reason: [did_not_see, risk_gate, price_moved, capital, discretionary, other]
+
+report:
+  window_days: 90              # trailing window used for the weekly report's metrics
+  rolling_windows: [30, 90]    # windows exposed in data/summary/latest.json
+  timezone: America/New_York
+  weekly: {dow: SUN, time: "19:00", window_minutes: 360}   # guarded window for the Sunday run
+  footer: >
+    Marks are taken at snapshot granularity (twice daily) from delayed, indicative Yahoo Finance
+    data; intraday touches of profit targets/stops can be missed. Shadow outcomes are an
+    approximation, not a tick-accurate replay. Realized P&L is after fees; theoretical P&L is before fees.
+
+# Shadow tracker defaults
+shadow:
+  settlement_snapshot_slot: close   # underlying price at the close slot of expiry day approximates the settlement price
+
+# Robinhood CSV import. COLUMN NAMES AND TRANS CODES ARE A HYPOTHESIS until verified on a real export.
+robinhood:
+  columns:                     # logical name -> accepted header names (case/space-insensitive)
+    activity_date: ["Activity Date", "Date"]
+    process_date: ["Process Date"]
+    settle_date: ["Settle Date"]
+    instrument: ["Instrument", "Symbol"]
+    description: ["Description"]
+    trans_code: ["Trans Code", "Transaction Code"]
+    quantity: ["Quantity", "Qty"]
+    price: ["Price"]
+    amount: ["Amount"]
+  required: [activity_date, instrument, description, trans_code, quantity, price]
+  option_trans_codes: [STO, BTC, BTO, STC, OEXP, OASGN, OEXC]
+  open_codes: [STO, BTO]
+  close_codes: [BTC, STC, OEXP, OASGN, OEXC]
+  date_formats: ["%m/%d/%Y", "%Y-%m-%d", "%m/%d/%y"]
+  assumed_fill_time_et: "12:00"    # CSV only has dates; timestamps are set to this ET time and marked ts_precision=date
+  match:
+    window_days: 3                 # fill date must be within [alert date, alert date + window_days]
+    min_confidence: 0.80           # below => journal/unmatched.json
+    weights: {legs: 0.55, structure: 0.15, time: 0.20, size: 0.10}
+
+watchdog:
+  grace_minutes: 45                # a snapshot slot is "late" this long after its slot time
+  lookback_hours: 30
+  jobs:
+    snapshot: {kind: slots}
+    weekly_report: {kind: weekly, grace_minutes: 180}

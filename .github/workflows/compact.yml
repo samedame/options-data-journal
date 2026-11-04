@@ -1,0 +1,61 @@
+name: compact
+
+# Monthly: merge each completed month of daily snapshots into one parquet per underlying-month, then
+# check repo size and warn on Discord when it nears the limit. NOTE: compaction reduces file count and
+# load time, not .git size (history keeps the daily blobs) - see DECISIONS.md.
+on:
+  workflow_dispatch:
+    inputs:
+      month:
+        description: "YYYY-MM (default: all completed months)"
+        required: false
+        default: ""
+      keep_daily:
+        description: "Keep the daily files after compacting"
+        type: boolean
+        default: false
+  schedule:
+    - cron: "30 6 2 * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: odj-compact
+  cancel-in-progress: false
+
+jobs:
+  compact:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 50
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install
+        run: |
+          pip install -r requirements.txt
+          pip install -e . --no-deps
+      - name: Compact
+        env:
+          IN_MONTH: ${{ inputs.month }}
+          IN_KEEP: ${{ inputs.keep_daily }}
+        run: |
+          args=()
+          if [ -n "${IN_MONTH}" ]; then args+=(--month "${IN_MONTH}"); fi
+          if [ "${IN_KEEP}" = "true" ]; then args+=(--keep-daily); fi
+          python -m odj compact "${args[@]}"
+      - name: Size check
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: python -m odj size-check --notify
+      - name: Commit and push
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          ODJ_GIT_NAME: github-actions[bot]
+          ODJ_GIT_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+        run: python -m odj ci publish --message "compact ${GITHUB_RUN_ID} [skip ci]"

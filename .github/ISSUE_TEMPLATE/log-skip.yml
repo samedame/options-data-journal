@@ -1,0 +1,46 @@
+name: Log a skipped alert
+description: Record why you did not take an alert.
+title: "[skip] "
+labels: ["log-skip"]
+body:
+  - type: input
+    id: alert_id
+    attributes:
+      label: Alert ID
+      description: e.g. spy-bps-bot-20261102T143500Z-1
+    validations:
+      required: true
+  - type: dropdown
+    id: reason
+    attributes:
+      label: Skip reason
+      options:
+        - did_not_see
+        - risk_gate
+        - price_moved
+        - capital
+        - discretionary
+        - other
+      default: 5
+    validations:
+      required: true
+  - type: input
+    id: ts
+    attributes:
+      label: Skipped at (UTC)
+      description: ISO-8601 with timezone. Empty = when this issue is opened.
+    validations:
+      required: false
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+    validations:
+      required: false
+  - type: checkboxes
+    id: test
+    attributes:
+      label: Test record
+      options:
+        - label: This is a test record (removable with `odj reset-test-data`)
+          required: false

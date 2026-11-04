@@ -1,0 +1,26 @@
+# secrets
+.env
+.env.*
+!.env.example
+# python
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+# caches
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.cache/
+# local scratch
+scratch/
+tmp/
+*.log
+.DS_Store
+exports/
+# runtime artefacts
+*.lock
+*.tmp
+*.stage

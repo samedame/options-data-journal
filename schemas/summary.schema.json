@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://odj.local/schemas/summary.schema.json",
+  "title": "Summary (data/summary/latest.json)",
+  "description": "Stable, versioned summary for BotDeck. schema_version bumps only on breaking changes; new optional fields may be added within a version.",
+  "type": "object",
+  "required": ["schema_version", "generated_at_utc", "bots", "open_positions", "rolling", "data_collection", "heartbeat", "disclaimer"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "generated_at_utc": {"type": "string"},
+    "min_sample": {"type": "integer"},
+    "bots": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["alerts", "fills", "skips", "exits", "open_positions"],
+        "properties": {
+          "alerts": {"type": "integer"},
+          "fills": {"type": "integer"},
+          "skips": {"type": "integer"},
+          "exits": {"type": "integer"},
+          "open_positions": {"type": "integer"},
+          "last_alert_ts_utc": {"type": ["string", "null"]},
+          "last_fill_ts_utc": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "open_positions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["fill_id", "bot", "underlying", "structure", "contracts_open", "entry_net_price"],
+        "properties": {
+          "fill_id": {"type": "string"},
+          "alert_id": {"type": ["string", "null"]},
+          "bot": {"type": ["string", "null"]},
+          "underlying": {"type": ["string", "null"]},
+          "structure": {"type": ["string", "null"]},
+          "contracts_open": {"type": "integer"},
+          "entry_ts_utc": {"type": "string"},
+          "entry_net_price": {"type": "number"},
+          "earliest_expiry": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "rolling": {
+      "type": "object",
+      "description": "Keyed by window label, e.g. '30d', '90d'. Each metric carries n and an insufficient_sample flag.",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "window_days": {"type": "integer"},
+          "alerts": {"type": "integer"},
+          "take_rate": {"type": "object"},
+          "entry_slippage_usd_per_contract": {"type": "object"},
+          "entry_slippage_pct_of_credit": {"type": "object"},
+          "latency_seconds": {"type": "object"},
+          "capture_ratio": {"type": "object"},
+          "slippage_vs_edge": {"type": "object"},
+          "unmarkable": {"type": "integer"},
+          "error": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "data_collection": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "days_collected": {"type": "integer"},
+          "snapshots": {"type": "integer"},
+          "first_date": {"type": ["string", "null"]},
+          "last_date": {"type": ["string", "null"]},
+          "last_snapshot_ts_utc": {"type": ["string", "null"]},
+          "last_snapshot_status": {"type": ["string", "null"]},
+          "last_usable_pct": {"type": ["number", "null"]}
+        }
+      }
+    },
+    "heartbeat": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "last_success_utc": {"type": ["string", "null"]},
+          "last_slot": {"type": ["string", "null"]},
+          "last_status": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "disclaimer": {"type": "string"}
+  }
+}

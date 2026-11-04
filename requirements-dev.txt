@@ -1,0 +1,9 @@
+-r requirements.txt
+pytest==9.2.0
+ruff==0.17.3
+mypy==2.4.1
+pandas-stubs==3.1.0.261029
+types-PyYAML==6.0.12.20261103
+types-requests==2.33.0.20261030
+types-jsonschema==4.26.0.20261006
+actionlint-py==1.7.12.25

@@ -1,0 +1,101 @@
+name: snapshot
+
+# Module A: option-chain snapshots (09:45 and 15:50 America/New_York; 12:50 on half-days).
+# Triggered by the Cloudflare `open-scheduler` Worker via workflow_dispatch (see README), with a cron
+# fallback. Each slot is scheduled at BOTH UTC offsets (EDT and EST); the script checks New York
+# time itself and exits quietly when the current run is outside the slot window, so DST never matters.
+on:
+  workflow_dispatch:
+    inputs:
+      slot:
+        description: "open | close | auto (auto = whichever slot window we are in)"
+        required: false
+        default: auto
+      underlying:
+        description: "Only this ticker (default: all configured)"
+        required: false
+        default: ""
+      force:
+        description: "Overwrite an existing snapshot for the slot"
+        type: boolean
+        default: false
+      ignore_window:
+        description: "Run even outside the slot window / on a closed day (testing)"
+        type: boolean
+        default: false
+  schedule:
+    - cron: "45 13 * * 1-5" # 09:45 EDT
+    - cron: "45 14 * * 1-5" # 09:45 EST
+    - cron: "50 19 * * 1-5" # 15:50 EDT
+    - cron: "50 20 * * 1-5" # 15:50 EST
+
+permissions:
+  contents: write
+
+# Snapshots are idempotent per (underlying, date, slot), so a queued duplicate is harmless.
+concurrency:
+  group: odj-snapshot-${{ github.event_name }}-${{ inputs.slot || 'auto' }}
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Gate (cheap time check so the off-DST-offset cron costs seconds, not minutes)
+        id: gate
+        run: |
+          if [ "$GITHUB_EVENT_NAME" != "schedule" ]; then echo "go=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+          hm=$((10#$(TZ=America/New_York date +%H%M)))
+          # 09:45-10:30 ET (open slot) or 12:50-16:40 ET (close slot, incl. the 12:50 half-day slot).
+          # This is only a cost guard; the Python code does the authoritative calendar/window check.
+          if { [ "$hm" -ge 945 ] && [ "$hm" -le 1030 ]; } || { [ "$hm" -ge 1250 ] && [ "$hm" -le 1640 ]; }; then
+            echo "go=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "go=false" >> "$GITHUB_OUTPUT"
+            echo "outside both slot windows in New York time; nothing to do"
+          fi
+      - uses: actions/checkout@v4
+        if: steps.gate.outputs.go == 'true'
+        with:
+          fetch-depth: 50
+      - uses: actions/setup-python@v5
+        if: steps.gate.outputs.go == 'true'
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install
+        if: steps.gate.outputs.go == 'true'
+        run: |
+          pip install -r requirements.txt
+          pip install -e . --no-deps
+      - name: Snapshot
+        id: snap
+        if: steps.gate.outputs.go == 'true'
+        continue-on-error: true
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          IN_SLOT: ${{ inputs.slot }}
+          IN_UNDERLYING: ${{ inputs.underlying }}
+          IN_FORCE: ${{ inputs.force }}
+          IN_IGNORE_WINDOW: ${{ inputs.ignore_window }}
+        run: |
+          args=(--slot "${IN_SLOT:-auto}")
+          if [ -n "${IN_UNDERLYING}" ]; then args+=(--underlying "${IN_UNDERLYING}"); fi
+          if [ "${IN_FORCE}" = "true" ]; then args+=(--force); fi
+          if [ "${IN_IGNORE_WINDOW}" = "true" ]; then args+=(--ignore-window); fi
+          python -m odj snapshot "${args[@]}"
+      - name: Commit and push (also records failures in the heartbeat)
+        if: always() && steps.gate.outputs.go == 'true'
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          ODJ_GIT_NAME: github-actions[bot]
+          ODJ_GIT_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+        run: python -m odj ci publish --message "snapshot ${GITHUB_RUN_ID} [skip ci]"
+      - name: Fail loudly
+        if: steps.snap.outcome == 'failure'
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          python -m odj notify-failure "snapshot workflow failed: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          exit 1

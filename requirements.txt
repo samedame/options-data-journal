@@ -1,0 +1,11 @@
+# Runtime dependencies, pinned (direct deps only; transitive deps float within these pins).
+pandas==3.1.0
+numpy==2.5.4
+scipy==1.18.1
+pyarrow==26.0.1
+yfinance==1.8.0
+pandas_market_calendars==5.6.0
+jsonschema==4.26.0
+PyYAML==6.0.3
+requests==2.34.2
+tzdata==2026.6

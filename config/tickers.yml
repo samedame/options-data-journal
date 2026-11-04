@@ -1,0 +1,59 @@
+# Module A configuration: what to snapshot, when, and how to flag quality.
+version: 1
+
+underlyings:
+  core: [SPY, QQQ, IWM]
+  extra: []          # e.g. earnings-straddle names: [NVDA, AAPL]. Same filters apply.
+  # Pinned contracts (exact expiry/strike of every OPEN alert/position in journal/) are always
+  # captured for the underlying of the alert, even if it is not listed here, and bypass filters.
+  pin_open_alerts: true
+
+snapshot:
+  timezone: America/New_York
+  # Slots are evaluated in New York time so DST never matters. `time` is the nominal ET time;
+  # `clamp_to_close_minutes` pulls the slot earlier on half-days so it is still captured before the close.
+  slots:
+    - {name: open,  time: "09:45"}
+    - {name: close, time: "15:50", clamp_to_close_minutes: 10}
+  slot_window_minutes: 40      # a run is accepted if now is in [slot, slot + window] ET
+  filters:
+    dte_min: 0
+    dte_max: 60
+    moneyness_pct: 15          # keep strikes within +/- this % of spot
+  retries: {attempts: 3, base_delay_seconds: 2.0}
+  # A fetched chain is rejected as "broken" when, during market hours, either condition holds.
+  broken_chain:
+    min_rows: 50
+    near_money_pct: 3          # "near the money" band used for the zero-bid test
+    max_zero_bid_fraction: 0.5 # of near-the-money, DTE>=1 rows
+    min_near_money_rows: 20    # test is skipped if fewer rows than this are near the money
+
+greeks_defaults:               # used (and flagged as defaulted) when live inputs cannot be fetched
+  risk_free_rate: 0.04
+  dividend_yield: {default: 0.01, SPY: 0.0125, QQQ: 0.0055, IWM: 0.0115}
+
+market_symbols:                # Yahoo symbols for the per-day market file
+  vix: "^VIX"
+  vix9d: "^VIX9D"
+  vix3m: "^VIX3M"
+  vxn: "^VXN"
+  rate: "^IRX"                 # 13-week T-bill yield (quoted in percent)
+
+quality:
+  wide_spread_pct: 0.50        # spread/mid above this ...
+  wide_spread_min_abs: 0.10    # ... AND spread above this many dollars => wide_spread
+  stale_last_minutes: 60
+  iv_divergence_abs: 0.10      # |iv_vendor - iv_calc| in vol points (0.10 = 10 vol pts)
+  parity_spread_mult: 1.0      # allowed parity residual = mult*(callSpread+putSpread) + abs_floor
+  parity_abs_floor: 0.10
+  # Rows carrying any of these flags are excluded by load_chains(usable_only=True).
+  unusable_flags: [zero_bid, zero_ask, crossed_market, wide_spread]
+
+storage:
+  compression: zstd
+  compression_level: 9
+  size_warn_mb: 800            # warns on data/ (+ .git if present); GitHub repos get unwieldy near 1 GB
+
+alphavantage:
+  base_url: https://www.alphavantage.co/query
+  timeout_seconds: 30

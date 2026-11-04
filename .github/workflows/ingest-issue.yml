@@ -1,0 +1,77 @@
+name: ingest-issue
+
+# Mobile-friendly logging: open an issue from one of the forms (fill / exit / skip). This workflow
+# parses the form, validates, appends to the journal, comments with the computed slippage and closes
+# the issue. On a validation error it comments the error and leaves the issue OPEN.
+#
+# Security: runs only for issues authored by the repository owner; the issue body is read from the
+# event FILE by Python and treated strictly as data - it is never interpolated into a shell command.
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: odj-issue-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    if: >-
+      github.event.issue.user.login == github.repository_owner &&
+      (startsWith(github.event.issue.title, '[fill]') ||
+       startsWith(github.event.issue.title, '[exit]') ||
+       startsWith(github.event.issue.title, '[skip]'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 50
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install
+        run: |
+          pip install -r requirements.txt
+          pip install -e . --no-deps
+      - name: Parse, validate and journal
+        id: ingest
+        continue-on-error: true
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: python -m odj ingest-issue --event "$GITHUB_EVENT_PATH" --comment-file "$RUNNER_TEMP/comment.md"
+      - name: Commit and push
+        if: steps.ingest.outputs.ok == 'true' && steps.ingest.outputs.created == 'true'
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          ODJ_GIT_NAME: github-actions[bot]
+          ODJ_GIT_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: python -m odj ci publish --message "journal entry from issue ${ISSUE_NUMBER} [skip ci]"
+      - name: Comment the result
+        if: always() && steps.ingest.outputs.ignored != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          if [ -s "$RUNNER_TEMP/comment.md" ]; then
+            gh issue comment "$ISSUE_NUMBER" --body-file "$RUNNER_TEMP/comment.md"
+          else
+            gh issue comment "$ISSUE_NUMBER" --body "The journal workflow failed before it could parse this issue. See the workflow run."
+          fi
+      - name: Close on success
+        if: steps.ingest.outputs.ok == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: gh issue close "$ISSUE_NUMBER" --reason completed
+      - name: Fail loudly (issue stays open)
+        if: steps.ingest.outputs.ok != 'true'
+        run: |
+          echo "entry rejected; the error was commented on the issue and nothing was written"
+          exit 1
