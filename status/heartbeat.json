@@ -5,6 +5,12 @@
       "last_status": "ok",
       "last_success_utc": "2026-11-04T05:34:11Z",
       "slots": {}
+    },
+    "ingest-issue": {
+      "last_run_utc": "2026-11-04T05:35:14Z",
+      "last_status": "ok",
+      "last_success_utc": "2026-11-04T05:35:14Z",
+      "slots": {}
     }
   },
   "schema_version": 1
