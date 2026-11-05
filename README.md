@@ -153,3 +153,12 @@ If you Worker-dispatch the snapshots (step 3) the wrong-offset crons never start
 * **Watchdog says a slot is late:** open Actions → *snapshot*; re-run with `slot=open|close`, `force=true`, `ignore_window=true` if you are outside the window.
 * **Alert rejected:** the Discord message lists the schema errors; run the same JSON through `odj alert validate --json alert.json` locally.
 * **Repo size warning:** see `DECISIONS.md` (storage) – compaction does not shrink `.git`.
+
+
+## Data source for snapshots (Tradier first, Yahoo fallback)
+
+`odj snapshot` reads option chains from **Tradier** when the `TRADIER_API_KEY` secret is set, and from Yahoo (yfinance, delayed)
+otherwise. Control it with `ODJ_PROVIDER`: `auto` (default), `tradier` (fails fast if no key), `yfinance` (never uses Tradier).
+Leave the `TRADIER_BASE_URL` secret empty for a production (real-time) key; a sandbox key works but is ~15 minutes delayed and
+is labelled `tradier-sandbox`. Each snapshot's `meta.json` records which feed produced it (`provider`), and a per-call fallback to
+Yahoo is logged. VIX-family symbols, the T-bill rate and the dividend yield always come from Yahoo.

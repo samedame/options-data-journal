@@ -75,6 +75,8 @@ jobs:
         continue-on-error: true
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          TRADIER_API_KEY: ${{ secrets.TRADIER_API_KEY }}
+          TRADIER_BASE_URL: ${{ secrets.TRADIER_BASE_URL }}
           IN_SLOT: ${{ inputs.slot }}
           IN_UNDERLYING: ${{ inputs.underlying }}
           IN_FORCE: ${{ inputs.force }}

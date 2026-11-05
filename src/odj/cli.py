@@ -99,12 +99,30 @@ def cmd_snapshot(args: argparse.Namespace) -> int:
 
         provider = SyntheticProvider()
     else:
+        from odj.snapshot.providers import tradier_provider as tp
         from odj.snapshot.providers.yfinance_provider import YFinanceProvider
 
         cfg = tickers_cfg(root)["snapshot"]["retries"]
-        provider = YFinanceProvider(
-            attempts=int(cfg["attempts"]), base_delay=float(cfg["base_delay_seconds"])
-        )
+        attempts, delay = int(cfg["attempts"]), float(cfg["base_delay_seconds"])
+        yf_provider = YFinanceProvider(attempts=attempts, base_delay=delay)
+        # ODJ_PROVIDER: auto (default: Tradier first when TRADIER_API_KEY is set, Yahoo otherwise or on any
+        # Tradier failure) | tradier (key required, Yahoo only as per-call fallback) | yfinance (Tradier never used).
+        choice = os.environ.get("ODJ_PROVIDER", "auto").strip().lower() or "auto"
+        if choice not in ("auto", "tradier", "yfinance"):
+            print(
+                f"unknown ODJ_PROVIDER={choice!r} (use auto, tradier, yfinance or synthetic)",
+                file=sys.stderr,
+            )
+            return 2
+        if choice == "tradier" and not tp.configured():
+            print("ODJ_PROVIDER=tradier but TRADIER_API_KEY is empty or missing", file=sys.stderr)
+            return 2
+        if choice != "yfinance" and tp.configured():
+            provider = tp.TradierProvider(fallback=yf_provider, attempts=attempts, base_delay=delay)
+            print(f"snapshot provider: {provider.feed} first, yfinance fallback")
+        else:
+            provider = yf_provider
+            print("snapshot provider: yfinance (Yahoo; may be delayed)")
     res = run_snapshot(
         root,
         provider=provider,
