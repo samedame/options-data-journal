@@ -1,0 +1,49 @@
+{
+  "date": "2026-11-12",
+  "slots": {
+    "open": {
+      "dividend_yield": {
+        "IWM": {
+          "source": "yfinance:info.trailingAnnualDividendYield",
+          "ts_utc": "2026-11-12T14:46:30Z",
+          "value": 0.0071249427
+        },
+        "QQQ": {
+          "source": "yfinance:info.trailingAnnualDividendYield",
+          "ts_utc": "2026-11-12T14:46:30Z",
+          "value": 0.0025638053
+        },
+        "SPY": {
+          "source": "yfinance:info.trailingAnnualDividendYield",
+          "ts_utc": "2026-11-12T14:46:29Z",
+          "value": 0.0074515687
+        }
+      },
+      "rate": {
+        "source": "yfinance:^IRX",
+        "ts_utc": "2026-11-12T14:46:29Z",
+        "value": 0.0410699987411499
+      },
+      "vix": {
+        "source": "yfinance:^VIX",
+        "ts_utc": "2026-11-12T14:46:28Z",
+        "value": 18.979999542236328
+      },
+      "vix3m": {
+        "source": "yfinance:^VIX3M",
+        "ts_utc": "2026-11-12T14:46:29Z",
+        "value": 20.18000030517578
+      },
+      "vix9d": {
+        "source": "yfinance:^VIX9D",
+        "ts_utc": "2026-11-12T14:46:28Z",
+        "value": 18.299999237060547
+      },
+      "vxn": {
+        "source": "yfinance:^VXN",
+        "ts_utc": "2026-11-12T14:46:29Z",
+        "value": 28.579999923706055
+      }
+    }
+  }
+}
