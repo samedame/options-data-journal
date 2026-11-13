@@ -202,7 +202,9 @@ def test_docs_exist_and_are_specific(doc: str, needles: list[str]) -> None:
 
 def test_cloudflare_worker_crons_match_snapshot_workflow_and_hold_no_secrets() -> None:
     worker = (REPO / "infra" / "cloudflare" / "worker.js").read_text()
-    crons = re.findall(r'"(\d+ [\d,]+ \* \* [\d-]+)":\s*"(open|close)"', worker)
+    block = re.search(r"const SLOT_BY_CRON = \{(.*?)\};", worker, re.S)
+    assert block, "SLOT_BY_CRON not found in worker.js"
+    crons = re.findall(r'"(\d+ [\d,]+ \* \* [\w-]+)":\s*"(open|close)"', block.group(1))
     assert sorted(slot for _, slot in crons) == ["close", "open"]
     wf = load(REPO / ".github/workflows/snapshot.yml")
     on = wf.get("on", wf.get(True))
@@ -213,7 +215,9 @@ def test_cloudflare_worker_crons_match_snapshot_workflow_and_hold_no_secrets() -
             ","
         ):  # the Worker must fire at the same UTC times as the workflow fallback
             assert (minute, hour) in gh, (cron, hour)
-        assert cron.endswith("1-5")
+        # Cloudflare numbers the weekdays 1 = Sunday ... 7 = Saturday, so "1-5" would mean Sunday-Thursday.
+        assert cron.endswith("MON-FRI"), cron
+    assert "isNyWeekday" in worker, "the Worker must drop weekends in New York time itself"
     for f in (REPO / "infra").rglob("*"):
         if f.is_file():
             text = f.read_text()

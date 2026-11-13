@@ -40,8 +40,9 @@ gh repo create samedame/options-data-journal --private --source . --remote origi
 3. **Scheduler (Cloudflare).** GitHub's own `schedule:` is best-effort and can skip runs entirely (it skipped the very first slot), so a Cloudflare
    Worker triggers `snapshot.yml` through its `workflow_dispatch` endpoint. Source: [`infra/cloudflare/worker.js`](infra/cloudflare/worker.js) (no secrets in it).
    It is its **own** Worker, `odj-snapshot-scheduler`; your existing `open-scheduler` is not touched. Two cron triggers (UTC, both DST offsets per slot in one
-   expression because the Workers Free plan allows 5 per account): `45 13,14 * * 1-5` (open) and `50 19,20 * * 1-5` (close). The Worker checks New York time and
-   drops the wrong offset.
+   expression because the Workers Free plan allows 5 per account): `45 13,14 * * MON-FRI` (open) and `50 19,20 * * MON-FRI` (close). Write the days as names: Cloudflare numbers
+   weekdays 1 = Sunday ... 7 = Saturday, so the numeric `1-5` means Sunday-Thursday (see DECISIONS.md 39). The Worker checks New York time and
+   drops the wrong offset and any weekend.
 
    The Worker needs one secret before it can dispatch: a fine-grained GitHub PAT limited to **only this repository** with **Actions: Read and write**.
 

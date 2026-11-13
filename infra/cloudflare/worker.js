@@ -8,9 +8,20 @@ const JOURNAL = "samedame/options-data-journal";
 
 // Each slot's cron lists both UTC offsets (EDT/EST) in ONE expression, because the Workers Free plan allows only
 // 5 cron triggers per account and `open-scheduler` already uses 3. The New York window check drops the wrong hour.
+//
+// Cloudflare numbers the day of week 1 = Sunday ... 7 = Saturday (GitHub and Unix cron use 1 = Monday), so the
+// original "1-5" meant Sunday-Thursday: no dispatch on Fridays, a pointless one on Sundays. Name the days instead.
 const SLOT_BY_CRON = {
-  "45 13,14 * * 1-5": "open", // 09:45 EDT / 09:45 EST
-  "50 19,20 * * 1-5": "close", // 15:50 EDT / 15:50 EST
+  "45 13,14 * * MON-FRI": "open", // 09:45 EDT / 09:45 EST
+  "50 19,20 * * MON-FRI": "close", // 15:50 EDT / 15:50 EST
+};
+
+// The spelling this Worker was first deployed with. Still recognised so that deploying this file before the two
+// triggers are edited in Cloudflare cannot silence the Worker; the weekday guard below keeps Sundays out, but only
+// the MON-FRI triggers above ever fire on a Friday.
+const LEGACY_SLOT_BY_CRON = {
+  "45 13,14 * * 1-5": "open",
+  "50 19,20 * * 1-5": "close",
 };
 
 // Minutes since midnight in New York, tight around each nominal slot (09:45 / 15:50) so the cron at the wrong
@@ -30,6 +41,12 @@ export function nyMinutes(date = new Date()) {
   return Number(p.hour) * 60 + Number(p.minute);
 }
 
+// New York weekday, so a trigger spelled wrongly (or fired by hand) can never dispatch a snapshot on a weekend.
+export function isNyWeekday(date = new Date()) {
+  const day = new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", weekday: "short" }).format(date);
+  return day !== "Sat" && day !== "Sun";
+}
+
 export function inWindow(slot, date = new Date()) {
   const w = WINDOW[slot];
   if (!w) return false;
@@ -38,6 +55,7 @@ export function inWindow(slot, date = new Date()) {
 }
 
 export async function dispatchSnapshot(env, slot, date = new Date()) {
+  if (!isNyWeekday(date)) return { skipped: "weekend in New York" };
   if (!inWindow(slot, date)) return { skipped: "outside New York slot window" };
   if (!env.JOURNAL_ACTIONS_TOKEN) {
     console.error("JOURNAL_ACTIONS_TOKEN is not set; cannot dispatch the snapshot workflow");
@@ -63,7 +81,7 @@ export async function dispatchSnapshot(env, slot, date = new Date()) {
 
 export default {
   async scheduled(event, env, ctx) {
-    const slot = SLOT_BY_CRON[event.cron];
+    const slot = SLOT_BY_CRON[event.cron] ?? LEGACY_SLOT_BY_CRON[event.cron];
     if (slot) ctx.waitUntil(dispatchSnapshot(env, slot));
     else console.error("unknown cron expression", event.cron);
   },
