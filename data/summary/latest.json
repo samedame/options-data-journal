@@ -2,39 +2,39 @@
   "bots": {},
   "data_collection": {
     "IWM": {
-      "days_collected": 5,
-      "first_date": "2026-11-04",
-      "last_date": "2026-11-17",
-      "last_snapshot_status": "ok",
-      "last_snapshot_ts_utc": "2026-11-17T20:51:10Z",
-      "last_usable_pct": 89.43,
-      "snapshots": 5
-    },
-    "QQQ": {
       "days_collected": 6,
       "first_date": "2026-11-04",
-      "last_date": "2026-11-17",
-      "last_snapshot_status": "ok",
-      "last_snapshot_ts_utc": "2026-11-17T20:51:06Z",
-      "last_usable_pct": 96.75,
+      "last_date": "2026-11-18",
+      "last_snapshot_status": "failed",
+      "last_snapshot_ts_utc": "2026-11-18T14:46:23Z",
+      "last_usable_pct": 43.3,
       "snapshots": 6
+    },
+    "QQQ": {
+      "days_collected": 7,
+      "first_date": "2026-11-04",
+      "last_date": "2026-11-18",
+      "last_snapshot_status": "failed",
+      "last_snapshot_ts_utc": "2026-11-18T14:46:18Z",
+      "last_usable_pct": 63.7,
+      "snapshots": 7
     },
     "SPY": {
       "days_collected": 6,
       "first_date": "2026-11-04",
       "last_date": "2026-11-17",
-      "last_snapshot_status": "ok",
+      "last_snapshot_status": "failed",
       "last_snapshot_ts_utc": "2026-11-17T20:51:01Z",
       "last_usable_pct": 94.17,
       "snapshots": 6
     }
   },
   "disclaimer": "Snapshot marks come from delayed, indicative Yahoo Finance data taken twice daily; shadow outcomes are approximations, not a tick-accurate replay.",
-  "generated_at_utc": "2026-11-17T20:51:12Z",
+  "generated_at_utc": "2026-11-18T14:46:06Z",
   "heartbeat": {
     "snapshot": {
       "last_slot": "2026-11-17/close",
-      "last_status": "ok",
+      "last_status": "failed",
       "last_success_utc": "2026-11-17T20:51:10Z"
     },
     "weekly_report": {
