@@ -30,7 +30,7 @@
     }
   },
   "disclaimer": "Snapshot marks come from delayed, indicative Yahoo Finance data taken twice daily; shadow outcomes are approximations, not a tick-accurate replay.",
-  "generated_at_utc": "2026-11-20T20:51:10Z",
+  "generated_at_utc": "2026-11-23T03:36:17Z",
   "heartbeat": {
     "snapshot": {
       "last_slot": "2026-11-20/close",
@@ -38,9 +38,9 @@
       "last_success_utc": "2026-11-20T20:51:08Z"
     },
     "weekly_report": {
-      "last_slot": "2026-W46",
+      "last_slot": "2026-W47",
       "last_status": "ok",
-      "last_success_utc": "2026-11-16T02:38:13Z"
+      "last_success_utc": "2026-11-23T03:36:17Z"
     }
   },
   "min_sample": 30,
