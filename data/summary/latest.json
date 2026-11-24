@@ -30,7 +30,7 @@
     }
   },
   "disclaimer": "Snapshot marks come from delayed, indicative Yahoo Finance data taken twice daily; shadow outcomes are approximations, not a tick-accurate replay.",
-  "generated_at_utc": "2026-11-24T14:46:05Z",
+  "generated_at_utc": "2026-11-24T14:46:26Z",
   "heartbeat": {
     "snapshot": {
       "last_slot": "2026-11-23/close",
