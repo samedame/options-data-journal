@@ -1,12 +1,12 @@
 {
   "jobs": {
     "snapshot": {
-      "last_detail": "SPY:failed; QQQ:failed; IWM:failed",
+      "last_detail": "SPY:ok; QQQ:ok; IWM:ok",
       "last_failure_utc": "2026-11-24T14:46:21Z",
-      "last_run_utc": "2026-11-24T14:46:21Z",
-      "last_slot": "2026-11-23/close",
-      "last_status": "failed",
-      "last_success_utc": "2026-11-23T20:51:17Z",
+      "last_run_utc": "2026-11-24T20:51:02Z",
+      "last_slot": "2026-11-24/close",
+      "last_status": "ok",
+      "last_success_utc": "2026-11-24T20:51:02Z",
       "slots": {
         "2026-11-04/close": {
           "status": "ok",
@@ -79,6 +79,10 @@
         "2026-11-23/open": {
           "status": "failed",
           "ts_utc": "2026-11-23T14:46:26Z"
+        },
+        "2026-11-24/close": {
+          "status": "ok",
+          "ts_utc": "2026-11-24T20:51:02Z"
         },
         "2026-11-24/open": {
           "status": "failed",

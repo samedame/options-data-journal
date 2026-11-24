@@ -2,40 +2,40 @@
   "bots": {},
   "data_collection": {
     "IWM": {
-      "days_collected": 9,
+      "days_collected": 10,
       "first_date": "2026-11-04",
-      "last_date": "2026-11-23",
-      "last_snapshot_status": "failed",
-      "last_snapshot_ts_utc": "2026-11-23T20:51:17Z",
-      "last_usable_pct": 87.38,
-      "snapshots": 10
+      "last_date": "2026-11-24",
+      "last_snapshot_status": "ok",
+      "last_snapshot_ts_utc": "2026-11-24T20:51:02Z",
+      "last_usable_pct": 88.77,
+      "snapshots": 11
     },
     "QQQ": {
-      "days_collected": 10,
+      "days_collected": 11,
       "first_date": "2026-11-04",
-      "last_date": "2026-11-23",
-      "last_snapshot_status": "failed",
-      "last_snapshot_ts_utc": "2026-11-23T20:51:12Z",
-      "last_usable_pct": 95.46,
-      "snapshots": 12
+      "last_date": "2026-11-24",
+      "last_snapshot_status": "ok",
+      "last_snapshot_ts_utc": "2026-11-24T20:50:57Z",
+      "last_usable_pct": 92.34,
+      "snapshots": 13
     },
     "SPY": {
-      "days_collected": 10,
+      "days_collected": 11,
       "first_date": "2026-11-04",
-      "last_date": "2026-11-23",
-      "last_snapshot_status": "failed",
-      "last_snapshot_ts_utc": "2026-11-23T20:51:07Z",
-      "last_usable_pct": 92.05,
-      "snapshots": 10
+      "last_date": "2026-11-24",
+      "last_snapshot_status": "ok",
+      "last_snapshot_ts_utc": "2026-11-24T20:50:52Z",
+      "last_usable_pct": 88.67,
+      "snapshots": 11
     }
   },
   "disclaimer": "Snapshot marks come from delayed, indicative Yahoo Finance data taken twice daily; shadow outcomes are approximations, not a tick-accurate replay.",
-  "generated_at_utc": "2026-11-24T14:46:26Z",
+  "generated_at_utc": "2026-11-24T20:50:45Z",
   "heartbeat": {
     "snapshot": {
-      "last_slot": "2026-11-23/close",
-      "last_status": "failed",
-      "last_success_utc": "2026-11-23T20:51:17Z"
+      "last_slot": "2026-11-24/close",
+      "last_status": "ok",
+      "last_success_utc": "2026-11-24T20:51:02Z"
     },
     "weekly_report": {
       "last_slot": "2026-W47",
